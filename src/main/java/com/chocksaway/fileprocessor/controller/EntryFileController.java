@@ -17,7 +17,7 @@ public class EntryFileController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/ping") public String ping() {
