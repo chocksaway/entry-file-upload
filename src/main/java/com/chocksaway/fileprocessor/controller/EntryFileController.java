@@ -1,7 +1,6 @@
 package com.chocksaway.fileprocessor.controller;
 
 import com.chocksaway.fileprocessor.exception.TransportServiceException;
-import com.chocksaway.fileprocessor.exception.TransportValidationException;
 import com.chocksaway.fileprocessor.service.TransportService;
 import com.chocksaway.fileprocessor.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IpApiResponse {
-    private String status;
-    private String country;
+    private final String status;
+    private final String country;
 
     @JsonCreator
     public IpApiResponse(@JsonProperty("status") String status,
