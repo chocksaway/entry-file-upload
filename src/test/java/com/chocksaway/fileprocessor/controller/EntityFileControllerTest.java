@@ -45,9 +45,31 @@ public class EntityFileControllerTest {
         );
 
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        mockMvc.perform(multipart("/entry/file/upload").file(file))
+        mockMvc.perform(multipart("/entry/file/upload").file(file)
+                .param("ip-address", "1.186.255.255"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void when_ip_address_is_invalid_403_status()
+            throws Exception {
+
+        MockMultipartFile file
+                = new MockMultipartFile(
+                "file",
+                "EntryFile.txt",
+                MediaType.TEXT_PLAIN_VALUE,
+                VALID_ENTRY_FILE_INPUT.getBytes()
+        );
+
+        MockMvc mockMvc
+                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        mockMvc.perform(multipart("/entry/file/upload").file(file)
+                        .param("ip-address", "tester2"))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andReturn();
     }
 
 
@@ -65,7 +87,8 @@ public class EntityFileControllerTest {
 
         MockMvc mockMvc
                 = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        MvcResult result = mockMvc.perform(multipart("/entry/file/upload").file(file))
+        MvcResult result = mockMvc.perform(multipart("/entry/file/upload").file(file)
+                .param("ip-address", "1.186.255.255"))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn();

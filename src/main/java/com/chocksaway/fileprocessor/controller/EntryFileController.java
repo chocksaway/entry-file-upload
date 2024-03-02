@@ -1,7 +1,9 @@
 package com.chocksaway.fileprocessor.controller;
 
 import com.chocksaway.fileprocessor.exception.TransportServiceException;
+import com.chocksaway.fileprocessor.exception.TransportValidationException;
 import com.chocksaway.fileprocessor.service.TransportService;
+import com.chocksaway.fileprocessor.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,17 @@ public class EntryFileController {
 
     @Autowired
     TransportService transportService;
+
+    @Autowired
+    ValidationService validationService;
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws TransportServiceException {
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file,
+            @RequestParam(value = "ip-address") String ipAddress) throws TransportServiceException {
+        if (!validationService.validate(ipAddress)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "IP address not valid: " + ipAddress);
+        }
+
         try {
             transportService.parseUploadFile(file);
         } catch (IOException | IllegalArgumentException e) {
