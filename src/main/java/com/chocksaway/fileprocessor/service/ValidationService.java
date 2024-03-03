@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ValidationService {
+    // http is in the spec
     final static String IP_API_DOT_COM_JSON_ENDPOINT = "http://ip-api.com/json/";
     public boolean validate(final String address) {
         RestTemplate restTemplate = new RestTemplate();
@@ -21,10 +22,12 @@ public class ValidationService {
 
         IpApiResponse ipApiResponse = gson.fromJson(response.getBody(), IpApiResponse.class);
 
-        if (ipApiResponse.getStatus().equals("fail")) {
+        if (!ipApiResponse.validState()) {
             return false;
+        } else if (!ipApiResponse.validateCountry()) {
+            return false;
+        } else {
+            return ipApiResponse.validateIsp();
         }
-        System.out.println("tester");
-        return true;
     }
 }
