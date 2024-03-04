@@ -16,7 +16,7 @@ public class IpApiResponse {
     @JsonCreator
     public IpApiResponse(@JsonProperty("status") String status,
                          @JsonProperty("country") String country,
-                         @JsonProperty("country") String isp) {
+                         @JsonProperty("isp") String isp) {
         this.status = status;
         this.country = country;
         this.isp = isp;

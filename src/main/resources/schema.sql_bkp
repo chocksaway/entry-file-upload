@@ -1,0 +1,13 @@
+-- DROP TABLE IF EXISTS request;
+--
+-- create table request(
+--    id UUID AUTO_INCREMENT PRIMARY KEY,
+--    country_code VARCHAR(250) NOT NULL,
+--    ip_address VARCHAR(250) NOT NULL,
+--    ip_provider VARCHAR(250) NOT NULL,
+--    name VARCHAR(250) NOT NULL,
+--    response_code VARCHAR(250) NOT NULL,
+--    time_lapsed VARCHAR(250) NOT NULL,
+--    time_stamp VARCHAR(250) NOT NULL,
+--    uri VARCHAR(250) NOT NULL
+-- );
