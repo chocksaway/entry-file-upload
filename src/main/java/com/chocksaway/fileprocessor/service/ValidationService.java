@@ -3,6 +3,7 @@ package com.chocksaway.fileprocessor.service;
 import com.chocksaway.fileprocessor.entity.IpApiResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,11 +12,13 @@ import org.springframework.web.client.RestTemplate;
 public class ValidationService {
     private IpApiResponse ipApiResponse;
     // http is in the spec
-    final static String IP_API_DOT_COM_JSON_ENDPOINT = "http://ip-api.com/json/";
+
+    @Value("${spring.ipApiBaseUrl}") String ipApiBaseUrl;
+
     public boolean validate(final String address) {
         RestTemplate restTemplate = new RestTemplate();
         String endpoint
-                = IP_API_DOT_COM_JSON_ENDPOINT + address;
+                = ipApiBaseUrl + address;
         ResponseEntity<String> response
                 = restTemplate.getForEntity(endpoint, String.class);
 
