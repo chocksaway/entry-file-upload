@@ -33,7 +33,7 @@ public class EntityFileControllerTest {
                 """;
 
     @Test
-    public void when_entry_file_is_null()
+    public void when_entry_file_is_the_word_invalid()
             throws Exception {
 
         MockMultipartFile file
@@ -74,7 +74,7 @@ public class EntityFileControllerTest {
 
 
     @Test
-    public void when_entry_file_uploaded_then_verify_201_status_and_three_sorted_transport_ascending_top_speed()
+    public void when_valid_entry_file_uploaded_then_verify_201_status_and_three_sorted_transport_ascending_top_speed()
             throws Exception {
 
         MockMultipartFile file

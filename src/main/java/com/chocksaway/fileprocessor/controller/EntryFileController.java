@@ -6,7 +6,8 @@ import com.chocksaway.fileprocessor.service.RequestService;
 import com.chocksaway.fileprocessor.service.TransportService;
 import com.chocksaway.fileprocessor.service.ValidationService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +21,17 @@ import java.util.Date;
 @RestController
 @RequestMapping("/entry/file/")
 public class EntryFileController {
+    private final TransportService transportService;
+    private final ValidationService validationService;
+    private final RequestService  requestService;
 
-    @Autowired
-    TransportService transportService;
+    public EntryFileController(TransportService transportService, ValidationService validationService, RequestService  requestService) {
+        this.transportService = transportService;
+        this.validationService = validationService;
+        this.requestService = requestService;
+    }
 
-    @Autowired
-    ValidationService validationService;
-
-    @Autowired
-    RequestService  requestService;
+    private static final Logger log = LoggerFactory.getLogger(EntryFileController.class);
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
@@ -45,6 +48,7 @@ public class EntryFileController {
 
         if (!validationService.validate(ipAddress)) {
             request.setResponseCode(String.valueOf(HttpStatus.FORBIDDEN));
+            log.error("Validation for IP address: {} false", request.getIpAddress());
             requestService.save(start.getTime(), request);
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "IP address not valid: " + ipAddress);
@@ -58,10 +62,7 @@ public class EntryFileController {
             request.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST));
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Invalid file input", e);
-        } finally {
-            requestService.save(start.getTime(), request);
         }
-
 
         try {
             request.setResponseCode(String.valueOf(HttpStatus.CREATED));
@@ -74,6 +75,50 @@ public class EntryFileController {
             request.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST));
             throw new RuntimeException(e);
         } finally {
+            log.info("Saving request:");
+            requestService.save(start.getTime(), request);
+        }
+    }
+
+
+    @PostMapping("/upload2")
+    public ResponseEntity<String> uploadWithNoIpAddress(
+            @RequestParam("file") MultipartFile file,
+            HttpServletRequest httpServletRequest) throws TransportServiceException {
+
+        Date start = new Date();
+        Request request = requestService.build(httpServletRequest, start.getTime());
+
+        if (!validationService.validate(request.getIpAddress())) {
+            request.setResponseCode(String.valueOf(HttpStatus.FORBIDDEN));
+            log.error("Validation for IP address: {} false", request.getIpAddress());
+            requestService.save(start.getTime(), request);
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "IP address not valid: " + request.getIpAddress());
+        }
+
+        request.addValidation(validationService.getIpApiResponse());
+
+        try {
+            transportService.parseUploadFile(file);
+        } catch (IOException | IllegalArgumentException e) {
+            request.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid file input", e);
+        }
+
+        try {
+            request.setResponseCode(String.valueOf(HttpStatus.CREATED));
+            return ResponseEntity.created(request.asUri())
+                    .body(transportService.getSortedTransportOutcomeAsJson());
+        } catch (IOException e) {
+            request.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST));
+            throw new TransportServiceException(e.getMessage());
+        } catch (URISyntaxException e) {
+            request.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST));
+            throw new RuntimeException(e);
+        } finally {
+            log.info("Saving request:");
             requestService.save(start.getTime(), request);
         }
     }

@@ -18,7 +18,7 @@ public class ValidationService {
     public boolean validate(final String address) {
         RestTemplate restTemplate = new RestTemplate();
         String endpoint
-                = ipApiBaseUrl + address;
+                = ipApiBaseUrl + "/json/" + address;
         ResponseEntity<String> response
                 = restTemplate.getForEntity(endpoint, String.class);
 
