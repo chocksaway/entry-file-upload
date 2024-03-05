@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @EnableWireMock({
-        @ConfigureWireMock(name = "validation-service", property = "spring.ipApiBaseUrl")
+        @ConfigureWireMock(name = "validation-service", property = "ipApiBaseUrl")
 })
 
 public class EntityFileControllerWithWiremockTest {
@@ -49,7 +49,7 @@ public class EntityFileControllerWithWiremockTest {
     @Test
     public void when_mocked_ip_address_is_invalid_and_returns_status_fail() throws Exception {
         // returns a URL to WireMockServer instance
-        env.getProperty("spring.ipApiBaseUrl");
+        env.getProperty("ipApiBaseUrl");
         wiremock.stubFor(get("/json/127.0.0.1").willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("""
@@ -77,7 +77,7 @@ public class EntityFileControllerWithWiremockTest {
     @Test
     public void when_valid_entry_file_uploaded_then_wiremock_verify_201_status_and_three_sorted_transport_ascending_top_speed() throws Exception {
         // returns a URL to WireMockServer instance
-        env.getProperty("spring.ipApiBaseUrl");
+        env.getProperty("ipApiBaseUrl");
         wiremock.stubFor(get("/json/127.0.0.1").willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("""

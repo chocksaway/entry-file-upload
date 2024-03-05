@@ -13,7 +13,7 @@ public class ValidationService {
     private IpApiResponse ipApiResponse;
     // http is in the spec
 
-    @Value("${spring.ipApiBaseUrl}") String ipApiBaseUrl;
+    @Value("${ipApiBaseUrl}") String ipApiBaseUrl;
 
     public boolean validate(final String address) {
         RestTemplate restTemplate = new RestTemplate();

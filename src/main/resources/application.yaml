@@ -14,11 +14,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 
-  ipApiBaseUrl: http://ip-api.com
+ipApiBaseUrl: http://ip-api.com
+fileValidation: true
 
-local:
-  server:
-    port: 9000
 
 
 
