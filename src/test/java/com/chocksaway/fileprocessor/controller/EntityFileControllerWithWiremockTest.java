@@ -47,7 +47,7 @@ public class EntityFileControllerWithWiremockTest {
     private Environment env;
 
     @Test
-    public void when_mocked_ip_address_is_invalid_and_returns_status_fail() throws Exception {
+    public void when_mocked_ip_address_is_invalid_and_returns_status_if_forbidden() throws Exception {
         // returns a URL to WireMockServer instance
         env.getProperty("ipApiBaseUrl");
         wiremock.stubFor(get("/json/127.0.0.1").willReturn(aResponse()
